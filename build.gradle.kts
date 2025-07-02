@@ -1,7 +1,7 @@
 plugins {
-    `java-library` apply false
-    `maven-publish` apply false
-    id("checkstyle") apply false
+    `java-library`
+    `maven-publish`
+    checkstyle
     id("org.owasp.dependencycheck") version "9.2.0" apply false
 }
 
@@ -19,6 +19,7 @@ subprojects {
     apply(plugin = "checkstyle")
     apply(plugin = "org.owasp.dependencycheck")
 
+    // Java configuration
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)
@@ -27,6 +28,7 @@ subprojects {
         withJavadocJar()
     }
 
+    // Checkstyle configuration
     checkstyle {
         toolVersion = "10.12.4"
         configFile = rootProject.file("config/checkstyle/checkstyle.xml")
@@ -34,8 +36,9 @@ subprojects {
         maxWarnings = 0
     }
 
-    dependencyCheck {
-        format = "HTML"
+    // Dependency Check configuration
+    configure<org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension> {
+        formats = listOf("HTML")
         suppressionFile = rootProject.file("config/dependency-check-suppressions.xml").path
     }
 
@@ -44,8 +47,17 @@ subprojects {
         testImplementation("org.junit.jupiter:junit-jupiter")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     }
-    
+
     tasks.named<Test>("test") {
         useJUnitPlatform()
+        testLogging {
+            events("passed", "skipped", "failed")
+        }
+    }
+
+    tasks.named<Javadoc>("javadoc") {
+        if (JavaVersion.current().isJava9Compatible) {
+            (options as StandardJavadocDocletOptions).addBooleanOption("html5", true)
+        }
     }
 }
