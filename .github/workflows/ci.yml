@@ -16,6 +16,9 @@ defaults:
   run:
     shell: bash
 
+permissions:
+  checks: write
+
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false
   JAVA_VERSION: 21
