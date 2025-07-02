@@ -1,10 +1,9 @@
 package io.vellum.core;
 
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class VellumCoreTest {
-    
     @Test
     void testBasicSetup() {
         // Basic test to ensure the package structure is working
