@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+
+    <!--
+        This file is used to suppress false positive reports from the OWASP Dependency-Check plugin.
+        When a vulnerability is reported for a dependency that have been determined is not actually a threat
+        (e.g., the vulnerability is in a part of the library that is not used), add a suppression here.
+
+        To create a suppression, use one or more of the following identifiers.
+        The more specific, the better.
+    -->
+
+    <!--
+    EXAMPLE 1: Suppress a specific CVE for a specific library using its SHA1 hash.
+                This is very specific and is a good practice.
+    <suppress>
+        <notes><![CDATA[
+        File: some-vulnerable-library-1.0.jar
+        This vulnerability is not exploitable in our project because we do not use the affected 'vulnerableMethod()'.
+        ]]></notes>
+        <sha1>a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2</sha1>
+        <cve>CVE-2022-12345</cve>
+    </suppress>
+    -->
+
+    <!--
+    EXAMPLE 2: Suppress a vulnerability based on its Common Platform Enumeration (CPE).
+                This is useful if a library is incorrectly identified as a different piece of software.
+    <suppress>
+        <notes><![CDATA[
+        The library 'my-internal-library.jar' is being incorrectly identified as 'some-other-product'.
+        ]]></notes>
+        <cpe>cpe:/a:some_vendor:some_other_product</cpe>
+    </suppress>
+    -->
+
+    <!--
+    EXAMPLE 3: Suppress all vulnerabilities for a specific GAV (GroupId, ArtifactId, Version).
+                Use this with caution. It's better to suppress individual CVEs.
+    <suppress>
+        <notes><![CDATA[
+        Suppressing all checks for an internally managed library that is not public.
+        ]]></notes>
+        <gav regex="true">^io\.vellum:internal-library:.*$</gav>
+    </suppress>
+    -->
+
+</suppressions>
