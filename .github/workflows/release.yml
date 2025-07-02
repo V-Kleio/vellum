@@ -1,0 +1,101 @@
+name: Release Pipeline
+
+on:
+  push:
+    branches:
+      - 'release/**'
+    tags:
+      - 'v*'
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  JAVA_VERSION: 21
+
+permissions:
+  contents: write
+
+jobs:
+  # =================================================================
+  # Job: Pre-release validation
+  # =================================================================
+  pre-release:
+    name: Pre-Release Validation
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/release/')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Run full test suite
+        run: ./gradlew clean build --no-daemon
+
+      - name: Run performance tests
+        run: ./gradlew performanceTest --no-daemon
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pre-release-test-reports
+          path: '**/build/reports/'
+
+  # =================================================================
+  # Job: Create the actual release
+  # =================================================================
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build and package release artifacts
+        run: ./gradlew clean build -x test --no-daemon
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          files: |
+            **/build/libs/*.jar
+            **/build/docs/javadoc/**
+          draft: true
+          prerelease: false
+
+      # TODO: Add Maven Central publishing when ready
+      # - name: Publish to Maven Central
+      #   run: ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
+      #   env:
+      #     SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+      #     SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+      #     SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+      #     SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+      #     SIGNING_KEY: ${{ secrets.SIGNING_KEY }}

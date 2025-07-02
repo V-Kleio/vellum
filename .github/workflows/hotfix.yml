@@ -1,0 +1,68 @@
+name: Hotfix Pipeline
+
+on:
+  push:
+    branches:
+      - 'hotfix/**'
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  JAVA_VERSION: 21
+
+permissions:
+  issues: write
+
+jobs:
+  # =================================================================
+  # Job: Urgent validation and notification
+  # =================================================================
+  urgent-validation:
+    name: Urgent Hotfix Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Build and run critical tests
+        run: ./gradlew build -x test --tests "*Critical*" --no-daemon
+
+      - name: Notify team on build status
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobStatus = '${{ job.status }}';
+            const branchName = '${{ github.ref_name }}';
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            let title;
+            let body;
+
+            if (jobStatus === 'success') {
+              title = `Hotfix Ready: ${branchName}`;
+              body = `> [!NOTE]\n> ### Hotfix Validation: Success\n> The hotfix branch **${branchName}** has passed validation and is ready for urgent review and merge.\n\n> [View Workflow Run](${runUrl})`;
+            } else {
+              title = `Hotfix Failed: ${branchName}`;
+              body = `> [!CAUTION]\n> ### Hotfix Validation: Failed\n> The build for hotfix branch **${branchName}** failed. Immediate attention is required.\n\n> [View Workflow Run](${runUrl})`;
+            }
+
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['hotfix', 'urgent']
+            });

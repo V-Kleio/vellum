@@ -1,0 +1,67 @@
+name: Feature Branch CI
+
+on:
+  push:
+    branches:
+      - 'feat/**'
+  pull_request:
+    branches:
+      - dev
+
+defaults:
+  run:
+    shell: bash
+
+env:
+  JAVA_VERSION: 21
+  GRADLE_COMMAND: ./gradlew build --no-daemon
+
+permissions:
+  pull-requests: write
+
+jobs:
+  # =================================================================
+  # Job: Lightweight checks for feature branches
+  # =================================================================
+  quick-check:
+    name: Quick Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Compile and run tests
+        run: ${{ env.GRADLE_COMMAND }}
+
+      - name: Comment on PR with build status
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const jobStatus = '${{ job.status }}';
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            let body;
+
+            if (jobStatus === 'success') {
+              body = `> [!NOTE]\n> ### Quick Validation: Success\n> The build and tests passed successfully. Ready for review.\n\n> [View Workflow Run](${runUrl})`;
+            } else {
+              body = `> [!WARNING]\n> ### Quick Validation: Failed\n> The build or tests failed. Please review the logs for details.\n\n> [View Workflow Run](${runUrl})`;
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
