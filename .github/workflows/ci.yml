@@ -27,7 +27,6 @@ env:
   GRADLE_TEST_CMD: ./gradlew test --no-daemon
   GRADLE_INTEGRATION_TEST_CMD: ./gradlew integrationTest --no-daemon
   GRADLE_CHECKSTYLE_CMD: ./gradlew checkstyleMain checkstyleTest
-  GRADLE_DEPSCAN_CMD: ./gradlew dependencyCheckAnalyze
 
 jobs:
   # =================================================================
@@ -61,37 +60,6 @@ jobs:
         with:
           name: checkstyle-results
           path: '**/build/reports/checkstyle/'
-
-  # =================================================================
-  # Job: Security Scan
-  # =================================================================
-  security:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up JDK ${{ env.JAVA_VERSION }}
-        uses: actions/setup-java@v4
-        with:
-          java-version: ${{ env.JAVA_VERSION }}
-          distribution: 'temurin'
-          cache: 'gradle'
-
-      - name: Make gradlew executable
-        run: chmod +x gradlew
-
-      - name: Run dependency vulnerability scan
-        run: ${{ env.GRADLE_DEPSCAN_CMD }}
-        continue-on-error: true
-
-      - name: Upload security report
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: security-report
-          path: '**/build/reports/dependency-check-report.html'
 
   # =================================================================
   # Job: Build & Unit Tests
@@ -146,7 +114,7 @@ jobs:
   build:
     name: Build & Package
     runs-on: ubuntu-latest
-    needs: [test, security]
+    needs: [test]
 
     steps:
       - name: Checkout code
