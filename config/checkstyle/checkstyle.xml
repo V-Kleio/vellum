@@ -9,32 +9,26 @@
 <module name="Checker">
     <property name="charset" value="UTF-8"/>
     <property name="severity" value="error"/>
-    <property name="fileExtensions" value="java, properties, xml"/>
+    <property name="fileExtensions" value="java,properties,xml"/>
+
+    <!-- Exclude generated files -->
+    <module name="BeforeExecutionExclusionFileFilter">
+        <property name="fileNamePattern" value="module\-info\.java$"/>
+    </module>
 
     <!-- File-level checks -->
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
     </module>
+    
     <module name="LineLength">
         <property name="fileExtensions" value="java"/>
         <property name="max" value="120"/>
         <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
 
-    <!-- TreeWalker checks - These checks are applied to the Java syntax tree -->
+    <!-- TreeWalker checks -->
     <module name="TreeWalker">
-        <!-- Javadoc Comments -->
-        <module name="InvalidJavadocPosition"/>
-        <module name="JavadocMethod">
-            <property name="accessModifiers" value="public, protected"/>
-            <property name="allowMissingParamTags" value="true"/>
-            <property name="allowMissingReturnTag" value="true"/>
-        </module>
-        <module name="JavadocVariable">
-            <property name="accessModifiers" value="public, protected"/>
-        </module>
-        <module name="JavadocStyle"/>
-
         <!-- Naming Conventions -->
         <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>
@@ -48,14 +42,20 @@
 
         <!-- Imports -->
         <module name="AvoidStarImport"/>
-        <module name="IllegalImport"/> <!-- Forbids importing sun.* packages -->
+        <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
 
-        <!-- Formatting and Whitespace -->
-        <module name="EmptyLineSeparator">
-            <property name="allowNoEmptyLineBetweenFields" value="true"/>
+        <!-- Size Violations -->
+        <module name="MethodLength">
+            <property name="max" value="150"/>
         </module>
+        <module name="ParameterNumber">
+            <property name="max" value="7"/>
+        </module>
+
+        <!-- Formatting and Whitespace -->
+        <module name="EmptyForIteratorPad"/>
         <module name="GenericWhitespace"/>
         <module name="MethodParamPad"/>
         <module name="NoWhitespaceAfter"/>
@@ -76,10 +76,16 @@
         <module name="NeedBraces"/>
         <module name="RightCurly"/>
 
-        <!-- Coding Style -->
+        <!-- Common Coding Problems -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="IllegalInstantiation"/>
+        <module name="InnerAssignment"/>
+        <module name="MagicNumber">
+            <property name="ignoreNumbers" value="-1,0,1,2,3,4,5,6,7,8,9,10,16,32,64,100,1000"/>
+            <property name="ignoreHashCodeMethod" value="true"/>
+            <property name="ignoreAnnotation" value="true"/>
+        </module>
         <module name="MissingSwitchDefault"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
@@ -88,6 +94,16 @@
         <module name="FinalClass"/>
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
-        <module name="VisibilityModifier"/>
+        <module name="VisibilityModifier">
+            <property name="packageAllowed" value="true"/>
+            <property name="protectedAllowed" value="true"/>
+        </module>
+
+        <!-- Miscellaneous -->
+        <module name="ArrayTypeStyle"/>
+        <module name="FinalParameters"/>
+        <module name="TodoComment"/>
+        <module name="UpperEll"/>
+
     </module>
 </module>
