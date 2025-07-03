@@ -51,3 +51,21 @@ subprojects {
         }
     }
 }
+
+tasks.register<JavaExec>("runExample") {
+    group = "application"
+    description = "Run Vellum example application"
+
+    dependsOn(":vellum-core:classes")
+
+    classpath = project(":vellum-core").sourceSets.main.get().runtimeClasspath
+    mainClass.set("io.vellum.core.examples.Example")
+
+    jvmArgs = listOf(
+        "-Djava.awt.headless=false",
+        "-Dorg.lwjgl.util.Debug=true"
+    )
+
+    standardInput = System.`in`
+    workingDir = rootDir
+}
