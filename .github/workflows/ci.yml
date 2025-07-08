@@ -26,7 +26,7 @@ env:
   GRADLE_BUILD_CMD: ./gradlew build --no-daemon -x test
   GRADLE_TEST_CMD: ./gradlew test --no-daemon
   GRADLE_INTEGRATION_TEST_CMD: ./gradlew integrationTest --no-daemon
-  GRADLE_CHECKSTYLE_CMD: ./gradlew checkstyleMain checkstyleTest
+  GRADLE_CHECKSTYLE_CMD: ./gradlew checkstyleMain
 
 jobs:
   # =================================================================

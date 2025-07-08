@@ -5,12 +5,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class VellumTest {
-    private static class TestApp extends Vellum {
+    private final static class TestApp extends Vellum {
         @Override
-        public void start() {}
+        public void start() { }
 
         @Override
-        public void update() {}
+        public void update() { }
     }
 
 
