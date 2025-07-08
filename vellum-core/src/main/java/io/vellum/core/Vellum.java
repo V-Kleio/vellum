@@ -184,6 +184,10 @@ public class Vellum {
         }
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public void background(float r, float g, float b, float a) {
         glClearColor(r, g, b, a);
     }
@@ -273,6 +277,9 @@ public class Vellum {
     }
     public int getHeight() { 
         return height;
+    }
+    public String getTitle() {
+        return title;
     }
     public long getFrameCount() {
         return frameCount;
