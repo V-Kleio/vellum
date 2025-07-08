@@ -32,6 +32,12 @@ subprojects {
         maxWarnings = 0
     }
 
+    tasks.named<Checkstyle>("checkstyleTest") {
+        configFile = rootProject.file("config/checkstyle/checkstyle.xml")
+        isIgnoreFailures = true
+        maxWarnings = 100
+    }
+
     dependencies {
         testImplementation(platform("org.junit:junit-bom:5.10.2"))
         testImplementation("org.junit.jupiter:junit-jupiter")
