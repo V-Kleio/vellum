@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class VellumTest {
-    private final static class TestApp extends Vellum {
+    private static final class TestApp extends Vellum {
         @Override
         public void start() { }
 
