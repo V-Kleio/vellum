@@ -5,3 +5,5 @@
 build
 
 .vscode
+
+vellum-core/src/main/java/io/vellum/core/examples/

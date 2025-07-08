@@ -48,15 +48,21 @@ public class Vellum {
      * 
      */
 
+
+    private static final int DEFAULT_WIDTH = 800;
+    private static final int DEFAULT_HEIGHT = 600;
+    private static final float NANO_TO_SECOND = 1.0f / 1_000_000_000.0f;
+
     // Properties
-    protected int width = 800;
-    protected int height = 600;
+    protected int width = DEFAULT_WIDTH;
+    protected int height = DEFAULT_HEIGHT;
     protected String title = "Vellum Application";
     protected long window;
 
     private boolean isRunning = false;
     private long frameCount = 0;
     private long startTime;
+
 
     public final void run() {
         try {
@@ -102,7 +108,7 @@ public class Vellum {
         start();
     }
 
-    public void start() {}
+    public void start() { }
 
     private void loop() {
         while (!glfwWindowShouldClose(window) && isRunning) {
@@ -117,7 +123,7 @@ public class Vellum {
         }
     }
 
-    public void update() {}
+    public void update() { }
 
     private void clean() {
         if (window != NULL) {
@@ -131,7 +137,7 @@ public class Vellum {
         }
     }
 
-    public void size(int width, int height) {
+    public void size(final int width, final int height) {
         this.width = width;
         this.height = height;
         if (window != NULL) {
@@ -139,7 +145,7 @@ public class Vellum {
         }
     }
 
-    public void background(float r, float g, float b) {
+    public void background(final float r, final float g, final float b) {
         glClearColor(r, g, b, 1.0f);
     }
 
@@ -148,13 +154,19 @@ public class Vellum {
     }
 
 
-    public int getWidth() { return width; }
-    public int getHeight() { return height; }
-    public long getFrameCount() { return frameCount; }
+    public int getWidth() { 
+        return width;
+    }
+    public int getHeight() { 
+        return height;
+    }
+    public long getFrameCount() {
+        return frameCount;
+    }
     public float getFrameRate() {
         long currentTime = System.nanoTime();
         long timeElapsed = currentTime - startTime;
-        return frameCount / (timeElapsed / 1_000_000_000.0f);
+        return frameCount / (timeElapsed * NANO_TO_SECOND);
     }
 
 }
