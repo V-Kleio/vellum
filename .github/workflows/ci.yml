@@ -27,6 +27,7 @@ env:
   GRADLE_TEST_CMD: ./gradlew test --no-daemon
   GRADLE_INTEGRATION_TEST_CMD: ./gradlew integrationTest --no-daemon
   GRADLE_CHECKSTYLE_CMD: ./gradlew checkstyleMain checkstyleTest
+  GRADLE_GENERATE_COVERAGE: ./gradlew jacocoTestReport
 
 jobs:
   # =================================================================
@@ -91,6 +92,9 @@ jobs:
         run: ${{ env.GRADLE_INTEGRATION_TEST_CMD }} --continue
         continue-on-error: true
 
+      - name: Generate test coverage report
+        run: ${{ env.GRADLE_GENERATE_COVERAGE }}
+
       - name: Generate test report summary
         uses: dorny/test-reporter@v1
         if: always()
@@ -98,6 +102,13 @@ jobs:
           name: Test Results (${{ matrix.os }})
           path: '**/build/test-results/**/*.xml'
           reporter: java-junit
+
+      - name: Upload coverage results artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-results
+          path: '**/build/reports/jacoco/'
 
       - name: Upload test results artifact
         uses: actions/upload-artifact@v4
