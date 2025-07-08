@@ -19,6 +19,7 @@ class VellumTest {
 
     @Nested
     @DisplayName("Basic Application Tests")
+    @SuppressWarnings("unused")
     class BasicAppTests {
         private TestApp app;
 
@@ -54,6 +55,7 @@ class VellumTest {
 
     @Nested
     @DisplayName("Graphics State Tests")
+    @SuppressWarnings("unused")
     class GraphicsStateTests {
         private TestApp app;
         
@@ -136,6 +138,7 @@ class VellumTest {
 
     @Nested
     @DisplayName("Input State Tests")
+    @SuppressWarnings("unused")
     class InputStateTests {
         private TestApp app;
         
@@ -192,6 +195,7 @@ class VellumTest {
 
     @Nested
     @DisplayName("Callback Tests")
+    @SuppressWarnings("unused")
     class CallbackTests {
         private TestApp app;
         private boolean callbackCalled;
