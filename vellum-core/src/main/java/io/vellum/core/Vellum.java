@@ -1,5 +1,9 @@
 package io.vellum.core;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSetErrorCallback;
@@ -7,13 +11,9 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 
 public final class Vellum {
-    private static List<Canvas> canvases = new ArrayList<>();
+    private static final List<Canvas> canvases = new ArrayList<>();
 
     private static boolean isRunning = false;
     private static long startTime;
@@ -45,6 +45,14 @@ public final class Vellum {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
     }
+
+    public static Canvas createCanvas(String title, int width, int height) {
+        Canvas canvas = new Canvas(title, width, height);
+        addCanvas(canvas);
+        return canvas;
+    }
+
+
 
     // private void setup2DProjection() {
     //     glViewport(0, 0, width, height);

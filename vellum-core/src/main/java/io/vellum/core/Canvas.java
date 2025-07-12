@@ -30,7 +30,7 @@ public class Canvas {
     private int height;
     private final long window;
 
-    private Canvas(String title, int width, int height) {
+    public Canvas(String title, int width, int height) {
         this.title = title;
         this.width = width;
         this.height = height;
@@ -64,11 +64,7 @@ public class Canvas {
         glfwShowWindow(this.window);
     }
 
-    public static Canvas create(String title, int width, int height) {
-        Canvas canvas = new Canvas(title, width, height);
-        Vellum.addCanvas(canvas);
-        return canvas;
-    }
+    public void update() { }
 
     public String getTitle() {
         return title;
