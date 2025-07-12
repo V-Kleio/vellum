@@ -1,8 +1,6 @@
 [versions]
 lwjgl = "3.3.4"
 junit-jupiter = "5.10.2"
-commons-math3 = "3.6.1"
-guava = "33.0.0-jre"
 
 [libraries]
 # LWJGL Core
@@ -16,10 +14,6 @@ lwjgl-assimp = { module = "org.lwjgl:lwjgl-assimp" }
 
 # Test
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
-
-# Utilities
-commons-math3 = { module = "org.apache.commons:commons-math3", version.ref = "commons-math3" }
-guava = { module = "com.google.guava:guava", version.ref = "guava" }
 
 [bundles]
 lwjgl-core = ["lwjgl-core", "lwjgl-glfw", "lwjgl-opengl"]
