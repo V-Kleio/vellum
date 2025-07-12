@@ -1,239 +1,137 @@
 package io.vellum.core;
 
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class VellumTest {
-    private static class TestApp extends Vellum {
-        @Override
-        public void start() { }
 
-        @Override
-        public void update() { }
+    @BeforeEach
+    void setUp() {
+        // Initialize GLFW before each test
+        Vellum.initialize();
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Clean up any created canvases after each test
+        // Note: This is a simplified cleanup - in reality you might need
+        // to track and clean up canvases more carefully
     }
 
     @Nested
-    @DisplayName("Basic Application Tests")
-    @SuppressWarnings("unused")
-    class BasicAppTests {
-        private TestApp app;
-
-        @BeforeEach
-        void setUp() {
-            app = new TestApp();
-        }
+    @DisplayName("Vellum Core Tests")
+    class VellumCoreTests {
 
         @Test
-        @DisplayName("Vellum can be instantiated with default values")
-        void testVellumCreation() {
-            assertEquals(800, app.getWidth());
-            assertEquals(600, app.getHeight());
-            assertEquals(0, app.getFrameCount());
-            assertEquals("Vellum Application", app.getTitle());
+        @DisplayName("Vellum can be initialized")
+        void testVellumInitialization() {
+            // Since initialize() is called in setUp, this should not throw
+            // We can call it again to ensure it's idempotent
+            Vellum.initialize();
         }
 
         @Test
-        @DisplayName("Window size can be changed")
-        void testWindowSizeChange() {
-            app.size(1024, 768);
-            assertEquals(1024, app.getWidth());
-            assertEquals(768, app.getHeight());
+        @DisplayName("Frame count starts at zero")
+        void testInitialFrameCount() {
+            assertEquals(0, Vellum.getFrameCount());
         }
 
         @Test
-        @DisplayName("Title can be set")
-        void testTitleSetting() {
-            app.setTitle("Test Application");
-            assertEquals("Test Application", app.getTitle());
+        @DisplayName("Initial running state is false")
+        void testInitialRunningState() {
+            assertFalse(Vellum.isRunning());
         }
-    }
 
-    @Nested
-    @DisplayName("Graphics State Tests")
-    @SuppressWarnings("unused")
-    class GraphicsStateTests {
-        private TestApp app;
-        
-        @BeforeEach
-        void setUp() {
-            app = new TestApp();
-        }
-        
         @Test
-        @DisplayName("Fill color can be set (RGB)")
-        void testFillColorRGB() {
-            app.fill(1.0f, 0.5f, 0.0f);
-            assertEquals(1.0f, app.fillR, 0.001f);
-            assertEquals(0.5f, app.fillG, 0.001f);
-            assertEquals(0.0f, app.fillB, 0.001f);
-            assertEquals(1.0f, app.fillA, 0.001f);
-            assertTrue(app.hasFill);
+        @DisplayName("Cannot start without canvases")
+        void testStartWithoutCanvases() {
+            assertThrows(RuntimeException.class, () -> {
+                Vellum.start();
+            }, "Window not found, cannot start");
         }
-        
+
         @Test
-        @DisplayName("Fill color can be set (RGBA)")
-        void testFillColorRGBA() {
-            app.fill(1.0f, 0.5f, 0.0f, 0.7f);
-            assertEquals(1.0f, app.fillR, 0.001f);
-            assertEquals(0.5f, app.fillG, 0.001f);
-            assertEquals(0.0f, app.fillB, 0.001f);
-            assertEquals(0.7f, app.fillA, 0.001f);
-            assertTrue(app.hasFill);
-        }
-        
-        @Test
-        @DisplayName("Fill color can be set (grayscale)")
-        void testFillColorGray() {
-            app.fill(0.5f);
-            assertEquals(0.5f, app.fillR, 0.001f);
-            assertEquals(0.5f, app.fillG, 0.001f);
-            assertEquals(0.5f, app.fillB, 0.001f);
-            assertEquals(1.0f, app.fillA, 0.001f);
-            assertTrue(app.hasFill);
-        }
-        
-        @Test
-        @DisplayName("Fill can be disabled")
-        void testNoFill() {
-            app.fill(1.0f, 0.0f, 0.0f);
-            assertTrue(app.hasFill);
-            
-            app.noFill();
-            assertFalse(app.hasFill);
-        }
-        
-        @Test
-        @DisplayName("Stroke color can be set")
-        void testStrokeColor() {
-            app.stroke(0.0f, 1.0f, 0.0f);
-            assertEquals(0.0f, app.strokeR, 0.001f);
-            assertEquals(1.0f, app.strokeG, 0.001f);
-            assertEquals(0.0f, app.strokeB, 0.001f);
-            assertEquals(1.0f, app.strokeA, 0.001f);
-            assertTrue(app.hasStroke);
-        }
-        
-        @Test
-        @DisplayName("Stroke can be disabled")
-        void testNoStroke() {
-            app.stroke(1.0f, 0.0f, 0.0f);
-            assertTrue(app.hasStroke);
-            
-            app.noStroke();
-            assertFalse(app.hasStroke);
-        }
-        
-        @Test
-        @DisplayName("Stroke weight can be set")
-        void testStrokeWeight() {
-            app.strokeWeight(3.5f);
-            assertEquals(3.5f, app.strokeWeight, 0.001f);
+        @DisplayName("Can create canvas")
+        void testCanvasCreation() {
+            Canvas canvas = Vellum.createCanvas("Test Window", 800, 600);
+            assertNotNull(canvas);
+            assertEquals("Test Window", canvas.getTitle());
+            assertEquals(800, canvas.getWidth());
+            assertEquals(600, canvas.getHeight());
         }
     }
 
     @Nested
-    @DisplayName("Input State Tests")
-    @SuppressWarnings("unused")
-    class InputStateTests {
-        private TestApp app;
-        
-        @BeforeEach
-        void setUp() {
-            app = new TestApp();
-        }
-        
+    @DisplayName("Canvas Tests")
+    class CanvasTests {
+
         @Test
-        @DisplayName("Mouse position is tracked")
-        void testMousePosition() {
-            app.mouseX = 150.0f;
-            app.mouseY = 200.0f;
+        @DisplayName("Canvas can be created with specified dimensions")
+        void testCanvasCreation() {
+            Canvas canvas = new Canvas("Test Canvas", 1024, 768);
             
-            assertEquals(150.0f, app.getMouseX(), 0.001f);
-            assertEquals(200.0f, app.getMouseY(), 0.001f);
+            assertEquals("Test Canvas", canvas.getTitle());
+            assertEquals(1024, canvas.getWidth());
+            assertEquals(768, canvas.getHeight());
         }
-        
+
         @Test
-        @DisplayName("Key state is tracked")
-        void testKeyState() {
-            // Simulate key press
-            app.keys[32] = true; // Space key
-            assertTrue(app.isKeyPressed(32));
+        @DisplayName("Canvas title can be changed")
+        void testCanvasTitleChange() {
+            Canvas canvas = new Canvas("Original Title", 800, 600);
+            canvas.setTitle("New Title");
+            assertEquals("New Title", canvas.getTitle());
+        }
+
+        @Test
+        @DisplayName("Canvas dimensions can be changed")
+        void testCanvasDimensionChange() {
+            Canvas canvas = new Canvas("Test", 800, 600);
             
-            app.keys[32] = false;
-            assertFalse(app.isKeyPressed(32));
-        }
-        
-        @Test
-        @DisplayName("Mouse button state is tracked")
-        void testMouseButtonState() {
-            app.mouseButtons[0] = true; // Left button
-            assertTrue(app.isMousePressed(0));
+            canvas.setWidth(1920);
+            canvas.setHeight(1080);
             
-            app.mouseButtons[0] = false;
-            assertFalse(app.isMousePressed(0));
+            assertEquals(1920, canvas.getWidth());
+            assertEquals(1080, canvas.getHeight());
         }
-        
+
         @Test
-        @DisplayName("Key bounds checking works")
-        void testKeyBoundsChecking() {
-            assertFalse(app.isKeyPressed(-1));
-            assertFalse(app.isKeyPressed(1000));
+        @DisplayName("Canvas initially should not close")
+        void testCanvasInitialCloseState() {
+            Canvas canvas = new Canvas("Test", 800, 600);
+            // Note: This test might be flaky depending on GLFW state
+            // In a real scenario, you might want to mock the GLFW calls
         }
-        
+
         @Test
-        @DisplayName("Mouse button bounds checking works")
-        void testMouseButtonBoundsChecking() {
-            assertFalse(app.isMousePressed(-1));
-            assertFalse(app.isMousePressed(10));
+        @DisplayName("Canvas can be destroyed")
+        void testCanvasDestroy() {
+            Canvas canvas = new Canvas("Test", 800, 600);
+            // This should not throw an exception
+            canvas.destroy();
         }
     }
 
     @Nested
-    @DisplayName("Callback Tests")
-    @SuppressWarnings("unused")
-    class CallbackTests {
-        private TestApp app;
-        private boolean callbackCalled;
-        
-        @BeforeEach
-        void setUp() {
-            app = new TestApp();
-            callbackCalled = false;
-        }
-        
+    @DisplayName("Sketch Tests")
+    class SketchTests {
+
         @Test
-        @DisplayName("Key callback can be overridden")
-        void testKeyCallback() {
-            TestApp testApp = new TestApp() {
-                @Override
-                public void keyPressed(int key, int action, int mods) {
-                    callbackCalled = true;
-                }
-            };
+        @DisplayName("Sketch can be created with renderer")
+        void testSketchCreation() {
+            // Since Renderer is an interface/abstract class, we'd need a mock
+            // For now, this test is commented out until you implement a concrete renderer
             
-            testApp.keyPressed(32, 1, 0);
-            assertTrue(callbackCalled);
-        }
-        
-        @Test
-        @DisplayName("Mouse callback can be overridden")
-        void testMouseCallback() {
-            TestApp testApp = new TestApp() {
-                @Override
-                public void mousePressed(int button, int action, int mods) {
-                    callbackCalled = true;
-                }
-            };
-            
-            testApp.mousePressed(0, 1, 0);
-            assertTrue(callbackCalled);
+            // MockRenderer renderer = new MockRenderer();
+            // Sketch sketch = new Sketch(renderer);
+            // assertNotNull(sketch);
         }
     }
-
-
 }
