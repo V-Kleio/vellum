@@ -5,3 +5,4 @@ plugins {
 rootProject.name = "vellum"
 
 include("vellum-core")
+include("vellum-math")
