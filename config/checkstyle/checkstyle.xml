@@ -12,6 +12,9 @@
     <module name="BeforeExecutionExclusionFileFilter">
         <property name="fileNamePattern" value="module\-info\.java$"/>
     </module>
+    <module name="SuppressionFilter">
+        <property name="file" value="/home/Kleio/projects/vellum/config/checkstyle/checkstyle-suppressions.xml"/>
+    </module>
 
     <!-- File-level checks -->
     <module name="FileTabCharacter">
@@ -137,16 +140,12 @@
 
         <!-- JavaDoc - Required for public API -->
         <module name="JavadocMethod">
-            <property name="scope" value="public"/>
+            <property name="accessModifiers" value="PUBLIC"/>
             <property name="allowMissingParamTags" value="false"/>
             <property name="allowMissingReturnTag" value="false"/>
         </module>
-        <module name="JavadocType">
-            <property name="scope" value="public"/>
-        </module>
-        <module name="JavadocVariable">
-            <property name="scope" value="public"/>
-        </module>
+        <module name="JavadocType"/>
+        <module name="JavadocVariable"/>
         <module name="JavadocStyle">
             <property name="checkEmptyJavadoc" value="true"/>
         </module>

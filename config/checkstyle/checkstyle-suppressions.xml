@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+
+<suppressions>
+    <!-- Allow public fields in math vector classes for performance and convention -->
+    <suppress checks="VisibilityModifier" files=".*[/\\]vellum-math[/\\].*Vector.*\.java$"/>
+    <suppress checks="VisibilityModifier" files=".*[/\\]vellum-math[/\\].*Matrix.*\.java$"/>
+
+    <suppress checks="JavadocMethod" files=".*[/\\]internal[/\\].*\.java$"/>
+    <suppress checks="JavadocType" files=".*[/\\]internal[/\\].*\.java$"/>
+</suppressions>
