@@ -35,9 +35,9 @@ subprojects {
     }
 
     tasks.named<Checkstyle>("checkstyleTest") {
-        configFile = rootProject.file("config/checkstyle/checkstyle.xml")
-        isIgnoreFailures = true
-        maxWarnings = 100
+        configFile = rootProject.file("config/checkstyle/checkstyle-test.xml")
+        isIgnoreFailures = false
+        maxWarnings = 0
     }
 
     jacoco {
@@ -62,7 +62,7 @@ subprojects {
             rule {
                 excludes = listOf(
                     "io.vellum.core.Vellum.initialize",
-                    "io.vellum.core.Vellum.setup2DProjection", 
+                    "io.vellum.core.Vellum.setup2DProjection",
                     "io.vellum.core.Vellum.setupInputCallbacks",
                     "io.vellum.core.Vellum.loop",
                     "io.vellum.core.Vellum.clean"

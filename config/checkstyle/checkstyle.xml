@@ -3,9 +3,6 @@
     "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN"
     "https://checkstyle.org/dtds/configuration_1_3.dtd">
 
-<!--
-    This file is based on the official configuration from the Checkstyle repository.
--->
 <module name="Checker">
     <property name="charset" value="UTF-8"/>
     <property name="severity" value="error"/>
@@ -20,17 +17,19 @@
     <module name="FileTabCharacter">
         <property name="eachLine" value="true"/>
     </module>
-    
+
     <module name="LineLength">
         <property name="fileExtensions" value="java"/>
-        <property name="max" value="120"/>
+        <property name="max" value="140"/>
         <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
     </module>
 
     <!-- TreeWalker checks -->
     <module name="TreeWalker">
         <!-- Naming Conventions -->
-        <module name="ConstantName"/>
+        <module name="ConstantName">
+            <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$"/>
+        </module>
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
         <module name="MemberName"/>
@@ -40,18 +39,46 @@
         <module name="StaticVariableName"/>
         <module name="TypeName"/>
 
-        <!-- Imports -->
-        <module name="AvoidStarImport"/>
+        <!-- Imports - Allow star imports for LWJGL -->
+        <module name="AvoidStarImport">
+            <property name="excludes" value="org.lwjgl.glfw.GLFW,org.lwjgl.opengl.GL11,org.lwjgl.opengl.GL20,org.lwjgl.opengl.GL30,org.lwjgl.opengl.GL33"/>
+            <property name="allowStaticMemberImports" value="true"/>
+        </module>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
 
         <!-- Size Violations -->
         <module name="MethodLength">
-            <property name="max" value="150"/>
+            <property name="max" value="100"/>
+            <property name="countEmpty" value="false"/>
         </module>
         <module name="ParameterNumber">
-            <property name="max" value="7"/>
+            <property name="max" value="5"/>
+            <property name="ignoreOverriddenMethods" value="true"/>
+        </module>
+        <module name="AnonInnerLength">
+            <property name="max" value="30"/>
+        </module>
+        <module name="LambdaBodyLength">
+            <property name="max" value="15"/>
+        </module>
+
+        <!-- Complexity -->
+        <module name="CyclomaticComplexity">
+            <property name="max" value="12"/>
+        </module>
+        <module name="NPathComplexity">
+            <property name="max" value="250"/>
+        </module>
+        <module name="NestedForDepth">
+            <property name="max" value="2"/>
+        </module>
+        <module name="NestedIfDepth">
+            <property name="max" value="3"/>
+        </module>
+        <module name="NestedTryDepth">
+            <property name="max" value="2"/>
         </module>
 
         <!-- Formatting and Whitespace -->
@@ -72,6 +99,9 @@
         <!-- Blocks -->
         <module name="AvoidNestedBlocks"/>
         <module name="EmptyBlock"/>
+        <module name="EmptyCatchBlock">
+            <property name="exceptionVariableName" value="expected|ignore|ignored"/>
+        </module>
         <module name="LeftCurly"/>
         <module name="NeedBraces"/>
         <module name="RightCurly"/>
@@ -82,26 +112,50 @@
         <module name="IllegalInstantiation"/>
         <module name="InnerAssignment"/>
         <module name="MagicNumber">
-            <property name="ignoreNumbers" value="-1,0,1,2,3,4,5,6,7,8,9,10,16,32,64,128,256,512,100,1000"/>
+            <property name="ignoreNumbers" value="-1,0,1,2,3,4,8,16,24,32,64,128,255,256,360,512,1000"/>
             <property name="ignoreHashCodeMethod" value="true"/>
             <property name="ignoreAnnotation" value="true"/>
+            <property name="ignoreFieldDeclaration" value="true"/>
+            <property name="constantWaiverParentToken" value="TYPECAST,ASSIGN"/>
         </module>
+
         <module name="MissingSwitchDefault"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
+        <module name="MissingOverride"/>
 
         <!-- Class Design -->
         <module name="FinalClass"/>
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
         <module name="VisibilityModifier">
-            <property name="packageAllowed" value="true"/>
+            <property name="packageAllowed" value="false"/>
             <property name="protectedAllowed" value="true"/>
+            <property name="allowPublicFinalFields" value="true"/>
+            <property name="allowPublicImmutableFields" value="true"/>
+        </module>
+
+        <!-- JavaDoc - Required for public API -->
+        <module name="JavadocMethod">
+            <property name="scope" value="public"/>
+            <property name="allowMissingParamTags" value="false"/>
+            <property name="allowMissingReturnTag" value="false"/>
+        </module>
+        <module name="JavadocType">
+            <property name="scope" value="public"/>
+        </module>
+        <module name="JavadocVariable">
+            <property name="scope" value="public"/>
+        </module>
+        <module name="JavadocStyle">
+            <property name="checkEmptyJavadoc" value="true"/>
         </module>
 
         <!-- Miscellaneous -->
         <module name="ArrayTypeStyle"/>
-        <module name="TodoComment"/>
+        <module name="TodoComment">
+            <property name="format" value="(TODO)|(FIXME)"/>
+        </module>
         <module name="UpperEll"/>
 
     </module>
