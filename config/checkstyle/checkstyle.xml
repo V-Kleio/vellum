@@ -120,6 +120,7 @@
             <property name="ignoreAnnotation" value="true"/>
             <property name="ignoreFieldDeclaration" value="true"/>
             <property name="constantWaiverParentToken" value="TYPECAST,ASSIGN"/>
+            <property name="tokens" value="NUM_DOUBLE,NUM_INT,NUM_LONG"/>
         </module>
 
         <module name="MissingSwitchDefault"/>
