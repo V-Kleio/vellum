@@ -13,7 +13,7 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 
 
 public final class Vellum {
-    private static final List<Canvas> canvases = new ArrayList<>();
+    private static List<Canvas> canvases = new ArrayList<>();
 
     private static boolean isRunning = false;
     private static long startTime;
