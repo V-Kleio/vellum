@@ -3,10 +3,9 @@ package io.vellum.math.vector;
 /**
  * A 2-dimensional vector with single-precision floating-point components.
  * <p>
- * This class represents a point or direction in 2D space and provides comprehensive
+ * This class represents a point or direction in 2D space and provides
  * operations for vector arithmetic, transformations, and geometric calculations.
- * Vector2 offers both immutable operations (returning new vectors) and mutable operations
- * (modifying the vector in place) for flexibility and performance.
+ * Vector2 offers both immutable and mutable operations for flexibility.
  * </p>
  * <p>
  * The class follows a naming convention where methods ending in past participles
@@ -26,10 +25,6 @@ package io.vellum.math.vector;
  *Vector2 unit = direction.normalized();
  *float length = direction.magnitude();
  * }</pre>
- *
- * @see #zero()
- * @see #one()
- * @see #fromAngle(float)
  */
 public final class Vector2 {
     private static final float DEFAULT_EPSILON = 1e-6f;
@@ -278,6 +273,7 @@ public final class Vector2 {
 
     /**
      * Returns a new vector with components multiplied element-wise with another vector.
+     * Not a matrix multiplication
      * This vector remains unchanged.
      *
      * @param other the vector to multiply with
@@ -656,6 +652,7 @@ public final class Vector2 {
     /**
      * Checks if this vector is equal to another object.
      * Two vectors are considered equal if their components are within a small epsilon.
+     * epsilon = 1e-6f
      *
      * @param obj the object to compare to
      * @return true if the objects are equal, false otherwise
